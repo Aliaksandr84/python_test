@@ -1,0 +1,13 @@
+data_sources:
+  - type: csv
+    path: ./sample.csv
+
+checks:
+  - name: Null check
+    type: not_null
+    columns: [id, name, age]
+
+notify:
+  method: email
+  recipients:
+    - aliaksandr_rechyts@epam.com

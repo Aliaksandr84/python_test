@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Data Quality Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        table { border-collapse: collapse; width: 60%%; }
+        th, td { border: 1px solid #cccccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .status-ok { color: green; font-weight: bold; }
+        .status-warn { color: orange; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Data Quality Report</h2>
+    <table>
+        <tr><th>Column</th><th>Missing</th><th>Status</th></tr>
+<tr><td>id</td><td>0</td><td><span class="status-ok">OK ✅</span></td></tr>
+<tr><td>name</td><td>1</td><td><span class="status-warn">1 missing ⚠️</span></td></tr>
+<tr><td>age</td><td>2</td><td><span class="status-warn">2 missing ⚠️</span></td></tr>
+</table><br><div><b>Some columns have missing values.</b></div><hr>
+    <h4>Raw Report Body</h4>
+    <pre>id: 0
+name: 1
+age: 2</pre>
+</body>
+</html>
