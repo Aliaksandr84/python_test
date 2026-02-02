@@ -11,3 +11,6 @@ notify:
   method: email
   recipients:
     - aliaksandr_rechyts@epam.com
+
+database:
+  url: sqlite:///./database.db
