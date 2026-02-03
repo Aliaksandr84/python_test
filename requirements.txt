@@ -3,3 +3,4 @@ SQLAlchemy
 Jinja2
 PyYAML
 sqlalchemy
+pymongo>=4.0

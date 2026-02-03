@@ -5,6 +5,20 @@ from flask import Flask, render_template_string
 from data_quality.checker import check_not_null  # Custom function to check for nulls in columns
 # from data_quality.notifier import send_email   # Only import if email notification is enabled
 
+from data_quality.mongodb.models import (
+    create_user, create_dataset, create_quality_report
+)
+
+# Create example user and dataset
+user_id = create_user("alice", "alice@example.com")
+dataset_id = create_dataset("Test Data", "/path/to/sample.csv")
+
+# After running your quality check...
+column_checks = [{"column_name": "id", "null_count": 0},
+                 {"column_name": "name", "null_count": 1}]
+report_id = create_quality_report(user_id, dataset_id, column_checks)
+print(f"Inserted report with id: {report_id}")
+
 # =========================
 # Configuration Parameters
 # =========================
