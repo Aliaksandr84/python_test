@@ -1,0 +1,26 @@
+mongodb:
+  uri: mongodb://localhost:27017
+  database: testdb_iEjsk
+  username: KMOeviX
+  password: BeyOtAWcEx
+  authSource: admin
+user:
+  username: UtFXhS
+  email: byqwS@example.com
+dataset:
+  name: mock_dataset_60
+  path: /tmp/AWyolGOKCe.csv
+  uploaded_at: '2026-01-12T10:34:45.629716'
+quality_check:
+  columns:
+  - id
+  - name
+  - age
+  check_nulls: true
+  min_rows: 451
+simulation:
+  run_id: hJCyAFrm
+  timestamp: '2026-02-03T10:34:45.629923'
+  parameters:
+    threshold: 0.95
+    max_iter: 49
