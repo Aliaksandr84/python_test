@@ -5,19 +5,23 @@ from flask import Flask, render_template_string
 from data_quality.checker import check_not_null  # Custom function to check for nulls in columns
 # from data_quality.notifier import send_email   # Only import if email notification is enabled
 
-from data_quality.mongodb.models import (
-    create_user, create_dataset, create_quality_report
-)
+#from data_quality.mongodb.models import (
+#    create_user, create_dataset, create_quality_report
+#)
+
+from data_quality.playwright_agent import fetch_html_playwright
+
+URL = "https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_population"
 
 # Create example user and dataset
-user_id = create_user("alice", "alice@example.com")
-dataset_id = create_dataset("Test Data", "/path/to/sample.csv")
+#user_id = create_user("alice", "alice@example.com")
+#dataset_id = create_dataset("Test Data", "/path/to/sample.csv")
 
 # After running your quality check...
 column_checks = [{"column_name": "id", "null_count": 0},
                  {"column_name": "name", "null_count": 1}]
-report_id = create_quality_report(user_id, dataset_id, column_checks)
-print(f"Inserted report with id: {report_id}")
+#report_id = create_quality_report(user_id, dataset_id, column_checks)
+#print(f"Inserted report with id: {report_id}")
 
 # =========================
 # Configuration Parameters
@@ -25,6 +29,10 @@ print(f"Inserted report with id: {report_id}")
 CSV_PATH = "sample.csv"                     # Path to the input CSV file
 COLUMNS_TO_CHECK = ['id', 'name', 'age']    # Columns that must not contain nulls
 
+def fetch_and_parse_table_with_playwright():
+    html = fetch_html_playwright(URL)
+    tables = pd.read_html(html)
+    return tables[0]
 
 def load_data(file_path):
     """
@@ -178,6 +186,10 @@ def generate_html_report(report, body, filename="report.html"):
     print(f"HTML report saved as '{filename}'. Open this file in your browser.")
 
 def main():
+    df = fetch_and_parse_table_with_playwright()
+    print(df.head())
+    df.to_csv("country_population_playwright.csv", index=False)
+
     try:
         # 1. Load the source data
         df = load_data(CSV_PATH)
