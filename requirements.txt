@@ -7,3 +7,6 @@ PyYAML
 sqlalchemy
 pymongo>=4.0
 playwright
+flask
+pydantic
+pydantic[email]
