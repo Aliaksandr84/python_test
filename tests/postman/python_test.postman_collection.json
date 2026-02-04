@@ -1,0 +1,103 @@
+{
+  "info": {
+    "name": "python_test API",
+    "_postman_id": "12345-abcdef-67890",
+    "description": "Sample Postman collection for python_test API endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["health"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Data Quality Report",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/data-quality-report",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["data-quality-report"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Submit Data Quality Report",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"dataset\": \"sample.csv\",\n  \"columns\": [\"id\", \"name\", \"age\"],\n  \"null_counts\": {\"id\": 0, \"name\": 1, \"age\": 0}\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/data-quality-report",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["data-quality-report"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Users",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["users"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"testuser@example.com\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/users",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["users"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
