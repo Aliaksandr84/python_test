@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from pydantic import BaseModel, EmailStr, ValidationError
+from pydantic import BaseModel, EmailStr, ValidationError, constr
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt, datetime
 
@@ -19,6 +19,57 @@ class RegisterRequest(BaseModel):
     username: str
     email: EmailStr
     password: str
+
+# In-memory feedback store (for example/demo)
+feedback_db = []
+
+class FeedbackRequest(BaseModel):
+    user_email: constr(strip_whitespace=True, min_length=5, max_length=100)
+    message: constr(strip_whitespace=True, min_length=1, max_length=1000)
+    rating: int  # 1-5
+
+    @classmethod
+    def validate_rating(cls, value):
+        if not (1 <= value <= 5):
+            raise ValueError("Rating must be between 1 and 5.")
+        return value
+
+def make_error(code, message, details=None, status=400):
+    error = {"code": code, "message": message}
+    if details:
+        error["details"] = details
+    return jsonify({"error": error}), status
+
+@app.route('/feedback', methods=['POST'])
+def post_feedback():
+    """
+    Accepts a feedback submission.
+    Request JSON must contain user_email, message, and rating (1-5).
+    """
+    try:
+        json_data = request.get_json()
+        data = FeedbackRequest(**json_data)
+        if not (1 <= data.rating <= 5):
+            return make_error("VALIDATION_FAILED", "Rating must be between 1 and 5.", status=400)
+    except (ValidationError, TypeError) as e:
+        details = (e.errors() if hasattr(e, "errors")
+                   else [{"msg": str(e)}])
+        return make_error("VALIDATION_FAILED", "Invalid input.", details, 400)
+
+    feedback = {
+        "id": len(feedback_db) + 1,
+        "user_email": data.user_email,
+        "message": data.message,
+        "rating": data.rating,
+        "submitted_at": datetime.datetime.utcnow().isoformat() + "Z"
+    }
+    feedback_db.append(feedback)
+    return jsonify({
+        "message": "Feedback received. Thank you!",
+        "feedback_id": feedback["id"],
+        "submitted_at": feedback["submitted_at"]
+    }), 201
+
 
 @app.route('/register', methods=['POST'])
 def register():
