@@ -25,3 +25,8 @@ def test_check_not_null():
     })
     result = check_not_null(df, ['id', 'name', 'age'])
     assert result == {'id': 1, 'name': 1, 'age': 1}
+
+Route	       Method	Protection	Description
+/register	POST	None	        User sign-up
+/login	        POST	None	        User login, get JWT
+/protected-data	GET	JWT required	Accessible only with token

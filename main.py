@@ -1,6 +1,10 @@
 import os                   # For file path and environment variable handling
 import pandas as pd         # For data manipulation with DataFrames
-from flask import Flask, render_template_string
+from auth_utils import token_required
+
+# ... (rest of your imports, registration, login, etc.)
+
+from flask import Flask, jsonify, request, render_template_string
 
 from data_quality.checker import check_not_null  # Custom function to check for nulls in columns
 # from data_quality.notifier import send_email   # Only import if email notification is enabled
@@ -12,6 +16,8 @@ from data_quality.checker import check_not_null  # Custom function to check for 
 from data_quality.playwright_agent import fetch_html_playwright
 
 URL = "https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_population"
+
+app = Flask(__name__)
 
 # Create example user and dataset
 #user_id = create_user("alice", "alice@example.com")
@@ -224,5 +230,18 @@ def main():
         print(f"[main] Error: {e}")
 
 
+@app.route('/protected-data', methods=['GET'])
+@token_required
+def protected_data():
+    user = getattr(request, "user", {})
+    # Return sample protected data, or query from DB
+    return jsonify({
+        "message": f"Hello, {user.get('username', 'user')}! This is your protected data.",
+        "user_id": user.get('user_id'),
+        "protected_stuff": [1,2,3]
+    }), 200
+
+# ... rest of your app (registration, login, profile, etc.)
+
 if __name__ == "__main__":
-    main()
+    app.run(debug=True)
