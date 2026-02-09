@@ -2,8 +2,12 @@ from flask import Flask, request, jsonify
 from pydantic import BaseModel, EmailStr, ValidationError, constr
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt, datetime
+from typing import Optional, List, Dict, Any
 
 app = Flask(__name__)
+
+support_requests = []
+
 SECRET_KEY = 'my_secret'
 
 users_db = {}
@@ -39,6 +43,51 @@ def make_error(code, message, details=None, status=400):
     if details:
         error["details"] = details
     return jsonify({"error": error}), status
+
+# --- Error Utility (Pattern) ---
+def make_error(code: str, message: str, details: Optional[Any] = None, status: int = 400):
+    """
+    Returns a standardized JSON error response.
+    """
+    error = {"code": code, "message": message}
+    if details:
+        error["details"] = details
+    return jsonify({"error": error}), status
+
+# --- Request Schema ---
+class SupportRequestSchema(BaseModel):
+    user_email: EmailStr
+    subject: constr(min_length=1, max_length=100)
+    description: constr(min_length=1, max_length=2048)
+    priority: Optional[int]  # 1 (high) - 3 (low), optional
+
+# --- POST /api/v1/support-request ---
+@app.route('/api/v1/support-request', methods=['POST'])
+def submit_support_request():
+    """
+    Accept a support request with validation and standardized error handling.
+    """
+    try:
+        parsed = SupportRequestSchema(**request.get_json())
+        if parsed.priority and (parsed.priority < 1 or parsed.priority > 3):
+            return make_error("VALIDATION_FAILED", "Priority must be 1 (high), 2 (medium), or 3 (low).", status=400)
+    except (ValidationError, TypeError) as e:
+        details = [{"field": ".".join(map(str, err['loc'])), "msg": err['msg']} for err in (e.errors() if hasattr(e, "errors") else [])]
+        return make_error("VALIDATION_FAILED", "Invalid input.", details or [{"msg": str(e)}], 400)
+    sr = {
+        "id": len(support_requests) + 1,
+        "user_email": parsed.user_email,
+        "subject": parsed.subject,
+        "description": parsed.description,
+        "priority": parsed.priority if parsed.priority else 2,
+        "submitted_at": datetime.datetime.utcnow().isoformat() + "Z"
+    }
+    support_requests.append(sr)
+    return jsonify({
+        "message": "Support request submitted.",
+        "request_id": sr["id"],
+        "submitted_at": sr["submitted_at"]
+    }), 201
 
 @app.route('/feedback', methods=['POST'])
 def post_feedback():

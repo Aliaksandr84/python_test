@@ -50,3 +50,31 @@ def test_feedback_invalid():
     data = response.get_json()
     assert "error" in data
     assert data["error"]["code"] == "VALIDATION_FAILED"
+
+## 4. **Unit Test Support**
+
+def test_submit_support_request():
+    client = app.test_client()
+    payload = {
+        "user_email": "alice@example.com",
+        "subject": "Login Issue",
+        "description": "Can't log in with my account.",
+        "priority": 2
+    }
+    resp = client.post("/api/v1/support-request", data=json.dumps(payload), content_type="application/json")
+    assert resp.status_code == 201
+    data = resp.get_json()
+    assert "request_id" in data
+    assert data["message"] == "Support request submitted."
+
+def test_invalid_email():
+    client = app.test_client()
+    payload = {
+        "user_email": "alice[at]example.com",
+        "subject": "Login Issue",
+        "description": "Can't log in with my account."
+    }
+    resp = client.post("/api/v1/support-request", data=json.dumps(payload), content_type="application/json")
+    assert resp.status_code == 400
+    data = resp.get_json()
+    assert data["error"]["code"] == "VALIDATION_FAILED"
