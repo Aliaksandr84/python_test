@@ -80,6 +80,11 @@ def run_data_quality_checks(df, columns):
         )
     return check_not_null(df, columns)
 
+def make_error(code, message, details=None, status=400):
+    error = {"code": code, "message": message}
+    if details:
+        error["details"] = details
+    return jsonify({"error": error}), status
 
 def format_report(report):
     """

@@ -30,3 +30,39 @@ Route	       Method	Protection	Description
 /register	POST	None	        User sign-up
 /login	        POST	None	        User login, get JWT
 /protected-data	GET	JWT required	Accessible only with token
+
+Error Codes & Status Codes
+Error Code	        HTTP Status	When Used
+VALIDATION_FAILED	400	        Invalid input/data
+AUTH_REQUIRED	        401	        Login required/invalid credentials
+INVALID_TOKEN	        401	        Expired/bad token
+CONFLICT	        409	        Duplicate username/email
+NOT_FOUND	        404	        Resource not found
+SERVER_ERROR	        500	        Internal error
+
+Validation error
+{
+  "error": {
+    "code": "VALIDATION_FAILED",
+    "message": "Invalid input.",
+    "details": [
+      {"field": "email", "msg": "value is not a valid email address"}
+    ]
+  }
+}
+
+Authentication required
+{
+  "error": {
+    "code": "AUTH_REQUIRED",
+    "message": "Invalid credentials."
+  }
+}
+
+Duplicate resource
+{
+  "error": {
+    "code": "CONFLICT",
+    "message": "User with this email already exists."
+  }
+}
