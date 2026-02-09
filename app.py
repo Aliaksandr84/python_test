@@ -1,10 +1,12 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, render_template, jsonify, redirect, url_for, flash
 from pydantic import BaseModel, EmailStr, ValidationError, constr
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt, datetime
 from typing import Optional, List, Dict, Any
+import os
 
 app = Flask(__name__)
+app.secret_key = 'CHANGE_ME_FILE_SECRET'
 
 support_requests = []
 
@@ -194,6 +196,48 @@ def protected_data():
 @app.errorhandler(500)
 def server_error(e):
     return make_error("SERVER_ERROR", "An internal server error occurred.", status=500)
+
+@app.route("/")
+def dashboard():
+    """
+    Dashboard screen
+    Shows a summary of app features and recent activity.
+    """
+    return render_template("dashboard.html")
+
+@app.route("/upload", methods=["GET", "POST"])
+def upload_screen():
+    """
+    CSV Upload screen
+    Allows the user to upload a CSV file for quality checking.
+    """
+    if request.method == "POST":
+        file = request.files.get("file")
+        if file and file.filename.endswith(".csv"):
+            # Save and process file, pseudocode:
+            filepath = os.path.join("uploads", file.filename)
+            file.save(filepath)
+            flash("File uploaded!", "success")
+            # redirect to reports or further processing
+            return redirect(url_for("dashboard"))
+        else:
+            flash("Invalid file type. Only .csv allowed.", "danger")
+            return redirect(request.url)
+    return render_template("upload.html")
+
+@app.route("/reports")
+def reports_screen():
+    """
+    Reports list screen
+    Shows available data quality reports.
+    """
+    # Example static reports for placeholder
+    reports = [
+        {"filename": "data1.csv", "status": "Passed"},
+        {"filename": "data2.csv", "status": "Failed"},
+    ]
+    return render_template("reports.html", reports=reports)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

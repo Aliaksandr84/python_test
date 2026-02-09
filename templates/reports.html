@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head><title>Quality Reports</title></head>
+<body>
+    <h1>Quality Reports</h1>
+    <table border="1">
+    <tr><th>Filename</th><th>Status</th></tr>
+    {% for report in reports %}
+      <tr>
+        <td>{{ report.filename }}</td>
+        <td>{{ report.status }}</td>
+      </tr>
+    {% endfor %}
+    </table>
+    <a href="{{ url_for('dashboard') }}">Back to Dashboard</a>
+</body>
+</html>

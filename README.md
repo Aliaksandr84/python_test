@@ -66,3 +66,14 @@ Duplicate resource
     "message": "User with this email already exists."
   }
 }
+
+## New Screens
+
+- `/` - Dashboard (summary view)
+- `/upload` - CSV upload screen
+- `/reports` - View past data quality reports
+
+**Testing**
+Run the included tests:
+```sh
+pytest tests/test_screens.py

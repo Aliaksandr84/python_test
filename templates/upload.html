@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head><title>CSV Upload</title></head>
+<body>
+    <h1>Upload CSV File</h1>
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv"/>
+        <input type="submit" value="Upload"/>
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</body>
+</html>
